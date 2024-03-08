@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Click to Copy!</title>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      font-size: 14px;
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      text-align: center;
+      padding: 14px;
+    }
+    h1 {
+      font-size: 16px;
+    }
+    .subtitle {
+      font-size: 16px;
+    }
+    .content {
+      margin-top: 16px;
+    }
+    .variable {
+      margin-bottom: 10px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .name {
+      font-weight: bold;
+    }
+    .value {
+      display: inline-block;
+      margin-left: 10px;
+      border: 1px solid white;
+      padding: 5px 10px;
+      border-radius: 5px;
+    }
+    .message {
+      color: limegreen;
+    }
+    .toggle-button {
+      margin-top: 12px;
+    }
+    button {
+      background-color: white;
+      color: black;
+      border: none;
+      padding: 10px 14px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .white-background {
+      background-color: white;
+      color: black;
+    }
+    .black-background {
+      background-color: black;
+      color: white;
+    }
+    .yawa-background {
+      background-color: chartreuse;
+      color: black;
+    }
+  </style>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const variables = ["idNumber", "firstName", "lastName", "phoneNumber", "yawaReference", "inboundid", "saYouthID", "conversationId"];
+
+      variables.forEach(variable => {
+        const variableElem = document.getElementById(variable);
+        const valueElem = variableElem.querySelector(".value");
+        const messageElem = variableElem.querySelector(".message");
+
+        const params = new URLSearchParams(window.location.search);
+        const value = params.get(variable);
+
+        if (value) {
+          valueElem.textContent = value;
+          variableElem.addEventListener("click", () => {
+            copyToClipboard(value);
+            showCopiedMessage(messageElem, value);
+          });
+        } else {
+          variableElem.style.display = "none";
+        }
+      });
+
+      const toggleButton = document.getElementById("toggleAccessibility");
+      const titleElem = document.querySelector("title");
+      const yawaReferenceElem = document.getElementById("yawaReference");
+      const yawaReferenceValue = yawaReferenceElem.querySelector(".value").textContent;
+
+      if (yawaReferenceValue.includes("YAWA")) {
+        document.body.classList.add("yawa-background");
+        titleElem.textContent = "YAWA Outbound call";
+      }
+
+      toggleButton.addEventListener("click", () => {
+        document.body.classList.remove("white-background", "black-background", "yawa-background");
+        if (yawaReferenceValue.includes("YAWA")) {
+          document.body.classList.add("yawa-background");
+          titleElem.textContent = "YAWA Outbound call";
+        } else {
+          document.body.classList.add("white-background");
+          titleElem.textContent = "Click to Copy!";
+        }
+      });
+
+      function copyToClipboard(text) {
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+      }
+
+      function showCopiedMessage(messageElem, value) {
+        messageElem.textContent = `${value} Copied!`;
+      }
+    });
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h1>Click to Copy!</h1>
+    <p class="subtitle">Click on a variable to copy:</p>
+    <div class="content">
+      <div class="variable" id="idNumber">
+        <span class="name">ID Number:</span>
+        <span class="value"></span>
+        <span class="message"></span>
+      </div>
+      <div class="variable" id="firstName">
+        <span class="name">First name:</span>
+        <span class="value"></span>
+        <span class="message"></span>
+      </div>
+      <div class="variable" id="lastName">
+        <span class="name">Last name:</span>
+        <span class="value"></span>
+        <span class="message"></span>
+      </div>
+      <div class="variable" id="phoneNumber">
+        <span class="name">Phone number (primary):</span>
+        <span class="value"></span>
+        <span class="message"></span>
+      </div>
+      <div class="variable" id="yawaReference">
+        <span class="name">Reference number:</span>
+        <span class="value"></span>
+        <span class="message"></span>
+      </div>
+      <div class="variable" id="inboundid">
+        <span class="name">ID Number if Inbound:</span>
+        <span class="value"></span>
+        <span class="message"></span>
+      </div>
+      <div class="variable" id="saYouthID">
+        <span class="name">SAYouthID:</span>
+        <span class="value"></span>
+        <span class="message"></span>
+      </div>
+      <div class="variable" id="conversationId">
+        <span class="name">Conversation ID:</span>
+        <span class="value"></span>
+        <span class="message"></span>
+      </div>
+    </div>
+    <div class="toggle-button">
+      <button id="toggleAccessibility">Toggle Visibility</button>
+    </div>
+  </div>
+</body>
+</html>
